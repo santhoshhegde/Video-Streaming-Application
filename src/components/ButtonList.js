@@ -1,7 +1,7 @@
 import React from "react";
 
 const ButtonList = ({ buttonName, selected, setSelected }) => {
-  console.log(selected);
+  // console.log(selected);
   return (
     <button
       className={`px-2 py-1 m-1.5 transition duration-300  rounded-lg font-medium text-sm ${

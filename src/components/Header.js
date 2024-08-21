@@ -1,17 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Menulogo from "../Icons/menulogo.svg";
 import YoutubeLogo from "../Icons/YouTubeLogo.png";
 import UserLogo from "../Icons/userLogo.svg";
 import SearchLogo from "../Icons/searchLogo.svg";
+import { useDispatch } from "react-redux";
+import { toggleMenu } from "../Utils/appSlice";
 
 const Header = () => {
+  const [searchText, setSearchText] = useState("assdf");
   const [isflicker, setFlicker] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const timer = setTimeout(() => getSearchedSuggestion(), 3000);
+  }, [searchText]);
+
+  const getSearchedSuggestion = () => {};
+
   const handleClick = () => {
     setFlicker(true);
     setTimeout(() => setFlicker(false), 600);
+    dispatch(toggleMenu());
   };
+
   return (
-    <header className="grid grid-flow-col items-center shadow-lg p-5">
+    <header className="grid grid-flow-col items-center shadow-lg p-5 fixed top-0 bg-white z-20 w-full">
       <div className="flex col-span-1 gap-5 items-center">
         <button
           onClick={handleClick}
@@ -26,9 +39,11 @@ const Header = () => {
 
       <div className="col-span-10 flex justify-center">
         <input
-          className="pl-3 p-3 w-96 border outline-1 outline-gray-400 rounded-l-full"
+          className="pl-3 p-3 w-2/4 border outline-1 outline-gray-400 rounded-l-full"
           type="search"
           placeholder="Search"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
         />
         <button
           className="p-2 px-6 bg-[#d3d3d3] rounded-r-full"
