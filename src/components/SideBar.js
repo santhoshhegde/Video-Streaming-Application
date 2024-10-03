@@ -12,7 +12,7 @@ const SideBar = () => {
   if (!isMenuOpen) return null;
 
   return (
-    <div className="p-4 w-1/6 h-[86vh] overflow-y-scroll">
+    <div className="p-4 w-60 h-[86vh] overflow-y-scroll">
       <Link to="/">
         <SideBarList icon={HomeIcon} iconName="Home" />
       </Link>

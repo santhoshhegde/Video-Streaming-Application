@@ -9,13 +9,18 @@ import { toggleMenu } from "../Utils/appSlice";
 const Header = () => {
   const [searchText, setSearchText] = useState("assdf");
   const [isflicker, setFlicker] = useState(false);
+  const [isSuggestion, setIsSuggestion] = useState(false);
   const dispatch = useDispatch();
+  console.log(searchText);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => getSearchedSuggestion(), 3000);
 
-  useEffect(() => {
-    const timer = setTimeout(() => getSearchedSuggestion(), 3000);
-  }, [searchText]);
+  //   return () => clearTimeout(timer);
+  // }, [searchText]);
 
-  const getSearchedSuggestion = () => {};
+  const getSearchedSuggestion = () => {
+    console.log(searchText);
+  };
 
   const handleClick = () => {
     setFlicker(true);
@@ -37,13 +42,15 @@ const Header = () => {
         <img className="h-5 " src={YoutubeLogo} alt="Youtube Logo" />
       </div>
 
-      <div className="col-span-10 flex justify-center">
+      <div className="col-span-10 flex justify-center relative">
         <input
-          className="pl-3 p-3 w-2/4 border outline-1 outline-gray-400 rounded-l-full"
+          className="pl-3 p-3 w-[40vw] border outline-1 outline-gray-400 rounded-l-full"
           type="search"
           placeholder="Search"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
+          onFocus={() => setIsSuggestion(true)}
+          onBlur={() => setIsSuggestion(false)}
         />
         <button
           className="p-2 px-6 bg-[#d3d3d3] rounded-r-full"
@@ -51,6 +58,11 @@ const Header = () => {
         >
           <img className="h-5" src={SearchLogo} alt="search logo" />
         </button>
+        <div className="absolute bg-green-500 h-48 w-[39vw] top-[100%] left-[23.3%]">
+          <ul>
+            <li>getSearchedSuggestion</li>
+          </ul>
+        </div>
       </div>
 
       <img className="h-5 col-span-1" src={UserLogo} alt="User Logo" />
