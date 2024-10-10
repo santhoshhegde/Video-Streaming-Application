@@ -5,21 +5,25 @@ import UserLogo from "../Icons/userLogo.svg";
 import SearchLogo from "../Icons/searchLogo.svg";
 import { useDispatch } from "react-redux";
 import { toggleMenu } from "../Utils/appSlice";
+import { SEARCH_SUGGESTION_API } from "../Utils/constants";
 
 const Header = () => {
-  const [searchText, setSearchText] = useState("assdf");
+  const [searchText, setSearchText] = useState("");
   const [isflicker, setFlicker] = useState(false);
   const [isSuggestion, setIsSuggestion] = useState(false);
+  const [suggestionList, setSuggestionList] = useState([]);
   const dispatch = useDispatch();
-  console.log(searchText);
-  // useEffect(() => {
-  //   const timer = setTimeout(() => getSearchedSuggestion(), 3000);
+  useEffect(() => {
+    const timer = setTimeout(() => getSearchedSuggestion(), 300);
 
-  //   return () => clearTimeout(timer);
-  // }, [searchText]);
+    return () => clearTimeout(timer);
+  }, [searchText]);
 
-  const getSearchedSuggestion = () => {
-    console.log(searchText);
+  const getSearchedSuggestion = async () => {
+    let data = await fetch(SEARCH_SUGGESTION_API + searchText);
+    let response = await data.json();
+    console.log(response);
+    setSuggestionList(response[1]);
   };
 
   const handleClick = () => {
@@ -29,7 +33,7 @@ const Header = () => {
   };
 
   return (
-    <header className="grid grid-flow-col items-center shadow-lg p-5 fixed top-0 bg-white z-20 w-full">
+    <header className="grid grid-flow-col items-center shadow-lg p-5 fixed top-0 bg-white z-30 w-full">
       <div className="flex col-span-1 gap-5 items-center">
         <button
           onClick={handleClick}
@@ -58,11 +62,22 @@ const Header = () => {
         >
           <img className="h-5" src={SearchLogo} alt="search logo" />
         </button>
-        <div className="absolute bg-green-500 h-48 w-[39vw] top-[100%] left-[23.3%]">
-          <ul>
-            <li>getSearchedSuggestion</li>
-          </ul>
-        </div>
+        <ul
+          className={`absolute p-2 bg-white min-h-48 w-[39vw] top-[100%] left-[16.6vw] shadow-lg rounded-md ${
+            isSuggestion && searchText.length > 0 ? "" : "hidden"
+          }`}
+        >
+          {suggestionList.map((suggestion) => (
+            <li
+              className="flex gap-3 items-center p-1 hover:bg-gray-200 cursor-default"
+              onMouseDown={(e) => setSearchText(e.target.innerText)}
+              key={suggestion}
+            >
+              <img src={SearchLogo} className="h-5" />
+              {suggestion}
+            </li>
+          ))}
+        </ul>
       </div>
 
       <img className="h-5 col-span-1" src={UserLogo} alt="User Logo" />
