@@ -3,9 +3,10 @@ import Menulogo from "../Icons/menulogo.svg";
 import YoutubeLogo from "../Icons/YouTubeLogo.png";
 import UserLogo from "../Icons/userLogo.svg";
 import SearchLogo from "../Icons/searchLogo.svg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleMenu } from "../Utils/appSlice";
 import { SEARCH_SUGGESTION_API } from "../Utils/constants";
+import { cache } from "../Utils/searchSlice";
 
 const Header = () => {
   const [searchText, setSearchText] = useState("");
@@ -13,6 +14,7 @@ const Header = () => {
   const [isSuggestion, setIsSuggestion] = useState(false);
   const [suggestionList, setSuggestionList] = useState([]);
   const dispatch = useDispatch();
+  const cacheItems = useSelector((store) => store.search.items);
   useEffect(() => {
     const timer = setTimeout(() => getSearchedSuggestion(), 300);
 
@@ -24,6 +26,7 @@ const Header = () => {
     let response = await data.json();
     console.log(response);
     setSuggestionList(response[1]);
+    dispatch(cache(response));
   };
 
   const handleClick = () => {
