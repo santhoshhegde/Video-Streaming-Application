@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Menulogo from "../Icons/menulogo.svg";
 import YoutubeLogo from "../Icons/YouTubeLogo.png";
-import UserLogo from "../Icons/userLogo.svg";
+// import UserLogo from "../Icons/userLogo.svg";
 import SearchLogo from "../Icons/searchLogo.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleMenu } from "../Utils/appSlice";
@@ -14,9 +14,15 @@ const Header = () => {
   const [isSuggestion, setIsSuggestion] = useState(false);
   const [suggestionList, setSuggestionList] = useState([]);
   const dispatch = useDispatch();
-  const cacheItems = useSelector((store) => store.search.items);
+  const cacheItems = useSelector((store) => store.search);
   useEffect(() => {
-    const timer = setTimeout(() => getSearchedSuggestion(), 300);
+    const timer = setTimeout(() => {
+      if (cacheItems[searchText]) {
+        setSuggestionList(cacheItems[searchText]);
+      } else {
+        getSearchedSuggestion();
+      }
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchText]);
@@ -24,9 +30,9 @@ const Header = () => {
   const getSearchedSuggestion = async () => {
     let data = await fetch(SEARCH_SUGGESTION_API + searchText);
     let response = await data.json();
-    console.log(response);
     setSuggestionList(response[1]);
-    dispatch(cache(response));
+    dispatch(cache({ [searchText]: response[1] }));
+    console.log(response);
   };
 
   const handleClick = () => {
@@ -44,9 +50,9 @@ const Header = () => {
             isflicker ? "flicker" : ""
           }`}
         >
-          <img className="h-5 " src={Menulogo} alt="Menu Icon" />
+          <img className="h-5" src={Menulogo} alt="Menu Icon" />
         </button>
-        <img className="h-5 " src={YoutubeLogo} alt="Youtube Logo" />
+        <img className="h-5" src={YoutubeLogo} alt="Youtube Logo" />
       </div>
 
       <div className="col-span-10 flex justify-center relative">
@@ -76,14 +82,14 @@ const Header = () => {
               onMouseDown={(e) => setSearchText(e.target.innerText)}
               key={suggestion}
             >
-              <img src={SearchLogo} className="h-5" />
+              <img src={SearchLogo} className="h-5" alt="search icon" />
               {suggestion}
             </li>
           ))}
         </ul>
       </div>
 
-      <img className="h-5 col-span-1" src={UserLogo} alt="User Logo" />
+      {/* <img className="h-5 col-span-1" src={UserLogo} alt="User Logo" /> */}
     </header>
   );
 };
