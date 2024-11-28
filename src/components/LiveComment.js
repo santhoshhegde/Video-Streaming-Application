@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import userLogo from "../Icons/userLogo.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { liveChat } from "../Utils/ChatSlice";
+import InputBox from "./InputBox";
 
 const LiveComment = ({ name, comment }) => {
-  const [messages, setMessages] = useState([]);
+  const dispatch = useDispatch();
+  const messagesFrom = useSelector((state) => state.chat.message);
   useEffect(() => {
     let ApiPooling = setInterval(() => {
       const names = [
@@ -22,8 +26,9 @@ const LiveComment = ({ name, comment }) => {
         "Superman",
         "Volwerine",
       ];
+
       const randName = names[Math.floor(Math.random() * names.length)];
-      //   console.log(randName);
+
       const sentence = [
         "Iron Man: 'I am Iron Man.'",
         "Captain America: 'I can do this all day.'",
@@ -38,24 +43,24 @@ const LiveComment = ({ name, comment }) => {
         "Groot: 'I am Groot.'",
       ];
       let randComment = sentence[Math.floor(Math.random() * sentence.length)];
-      setMessages((prev) => [
-        { name: randName, comment: randComment },
-        ...prev,
-      ]);
-      setMessages((prev) => prev.filter((_, ind) => ind !== 10));
+
+      dispatch(liveChat({ name: randName, comment: randComment }));
     }, 2000);
+
     return () => clearInterval(ApiPooling);
   }, []);
   return (
-    <div className="w-96 h-[360px] bg-gray-100 border-2 border-black rounded-lg p-3 overflow-y-scroll">
-      Live Comment
-      {messages.map((message, i) => (
-        <div className="flex gap-5 items-center my-2" key={i}>
-          <img src={userLogo} alt="userLogo" width={30} />
-          <h1>{message.name}</h1>
-          <h2>{message.comment}</h2>
-        </div>
-      ))}
+    <div>
+      <div className="w-96 h-[360px] bg-gray-100 border-2 border-black rounded-lg p-3 overflow-y-scroll flex flex-col-reverse">
+        {messagesFrom.map((message, i) => (
+          <div className="flex gap-5 items-center my-2" key={i}>
+            <img src={userLogo} alt="userLogo" width={30} />
+            <h1>{message.name}</h1>
+            <h2>{message.comment}</h2>
+          </div>
+        ))}
+      </div>
+      <InputBox />
     </div>
   );
 };
